@@ -1,5 +1,5 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Person } from './Person'
 import { StudentList } from './StudentList'
 import { NotPresentList } from './NotPresentList'
@@ -11,38 +11,41 @@ import { shuffle } from './utils/shuffle'
 
 function App() {
 
-  const [students, setStudents] = useState([
-    { id: 1, firstname: "Rune",   lastname: "Panda",    isPresent: true, groupId: null },
-    { id: 2, firstname: "Amanda", lastname: "Jansson",  isPresent: true, groupId: null },
-    { id: 3, firstname: "Rolf",   lastname: "Rolfson",  isPresent: true, groupId: null },
-    { id: 4, firstname: "Ines",   lastname: "Pandson",  isPresent: true, groupId: null },
-    { id: 5, firstname: "Erik",   lastname: "Eriksson", isPresent: true, groupId: null },
-    { id: 6, firstname: "Sara",   lastname: "Lindgren", isPresent: true, groupId: null },
-    { id: 7, firstname: "Johan",  lastname: "Berg",     isPresent: true, groupId: null },
-    { id: 8, firstname: "Lisa",   lastname: "Karlsson", isPresent: true, groupId: null },
-    { id: 9, firstname: "Marcus", lastname: "Holm",     isPresent: true, groupId: null },
-  ])
+  const [students, setStudents] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    setLoading(true)
+
+    fetch('./src/data/students.json')
+        .then(response => response.json())
+        .then(json => setStudents(json.students))
+        .catch(error => setError("jsonStudents: " + error.message))
+        .finally(() => setLoading(false))
+
+    }, [])
 
   const present = students.filter(student => student.isPresent === true)
   const absent = students.filter(student => student.isPresent === false)
   const mixed = students.filter(student => student.groupId !== null)
   const groups = mixed.reduce((acc, student) => {
-  const groupId = student.groupId
+    const groupId = student.groupId
 
-  if (!acc[groupId]) {
-    acc[groupId] = []
-  }
+    if (!acc[groupId]) {
+      acc[groupId] = []
+    }
 
-  acc[groupId].push(student)
-  return acc
-}, {})
+    acc[groupId].push(student)
+    return acc
+  }, {})
 
   function resetStudents () {
-    setStudents(students.map(student => ({...student, isPresent: true, groupId: null})))
+    setStudents(students?.map(student => ({...student, isPresent: true, groupId: null})))
   }
 
   function togglePresent(id) {
-    setStudents(students.map(student => {
+    setStudents(students?.map(student => {
       if (student.id === id) {
         return { ...student, isPresent: !student.isPresent }
       }
@@ -51,7 +54,7 @@ function App() {
   }
 
   function setGroupId (students) {
-    return students.map((student, i) => {
+    return students?.map((student, i) => {
       if (students.length % 2 != 0 && i >= students.length-3) {
         return {...student, groupId: Math.floor((students.length - 3) / 2) + 1 }
       }
@@ -69,7 +72,7 @@ function App() {
     console.log("Grouped: " + groupedStudents);
     console.log(groupedStudents);
 
-    setStudents([...groupedStudents.map(s => ({...s, isPresent: null})), ...absent])
+    setStudents([...groupedStudents?.map(s => ({...s, isPresent: null})), ...absent])
 
   }
 
@@ -82,7 +85,7 @@ function App() {
 
         <StudentList>
           {
-          present.map(student => (
+          present?.map(student => (
             <Person 
               key={student.id}
               {...student}
@@ -94,7 +97,7 @@ function App() {
 
         <NotPresentList>
           {
-          absent.map(student => (
+          absent?.map(student => (
             <Person 
               key={student.id}
               {...student}
