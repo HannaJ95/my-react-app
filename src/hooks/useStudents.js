@@ -20,7 +20,7 @@ export function useStudents() {
     useEffect(() => {
         setLoading(true)
 
-        fetch('./src/data/students.json')
+        fetch('/data/students.json')
             .then(response => response.json())
             .then(json => setStudents(json.students))
             .catch(error => setError("jsonStudents: " + error.message))
