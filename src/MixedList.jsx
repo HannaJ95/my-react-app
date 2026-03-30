@@ -1,39 +1,17 @@
-import styled from "@emotion/styled"
-
-/* styling-sätt: Emotion/Styled Components (CSS-in-JS)  */
-
-const Wrapper = styled.section`
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  overflow: auto;
-  background-color: hotpink;   /* ändrad färg för att testa */
-  border-radius: 1rem;
-`
-
-const Title = styled.h1`
-  font-size: x-small;
-`
-
-const SubTitle = styled(Title)`
-  font-style: italic;
-  color: orange;
-`
-
-const Children = styled.div`
-border: 1px solid black;
-`
+import { Button } from './components/Button'
 
 export function MixedList({ children, mixStudents, mixed }) {
   return (
-    <Wrapper>
-      <button onClick={mixStudents} disabled={mixed.length > 0}>
-        MIXA
-      </button>
-      <Title>Mixade par</Title>
-      <SubTitle>oki</SubTitle>
-      <Children>
+    <section className="col-start-2 row-span-2 bg-surface rounded-xl p-4 overflow-auto flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-brand-secondary font-semibold text-sm uppercase tracking-widest">Mixade par</h2>
+        <Button onClick={mixStudents} disabled={mixed?.length > 0} variant="primary" size="sm">
+          Mixa
+        </Button>
+      </div>
+      <div className="flex flex-col gap-2">
         {children}
-      </Children>
-    </Wrapper>
-  );
+      </div>
+    </section>
+  )
 }

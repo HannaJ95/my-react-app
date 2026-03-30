@@ -1,5 +1,1 @@
-/* styling-sätt: CSS Modules  */
-
-.heading {
-    color: greenyellow;
-}
+/* Tömd — all styling sker via Tailwind utilities direkt i komponenterna */
